@@ -16,9 +16,13 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
+            'role' => 'in:admin,teacher,student',
         ]);
 
-        $user = User::create($fields);
+        // Set default role to 'admin'
+        $userData = array_merge($fields, ['role' => $fields['role'] ?? 'admin']);
+
+        $user = User::create($userData);
         $token = $user->createToken($fields['name']);
         
         return [
